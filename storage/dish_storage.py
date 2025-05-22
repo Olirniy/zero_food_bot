@@ -58,6 +58,17 @@ def get_dishes_by_category(category_id: int):
             raise
 
 
+def get_all_dishes_with_categories():
+    """Получить все блюда с информацией о категориях"""
+    with SessionLocal() as session:
+        try:
+            from repository.dish_repo import get_all_dishes_with_categories as repo_get_all_dishes
+            return repo_get_all_dishes(session)
+        except Exception as e:
+            logger.error(f"Error getting all dishes with categories: {e}")
+            raise
+
+
 
 # def add_dish(
 #     name: str,

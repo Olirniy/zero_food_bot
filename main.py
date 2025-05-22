@@ -349,11 +349,11 @@ def main():
         @bot.message_handler(commands=['all_dishes'])
         def handle_all_dishes(message):
             try:
-                from storage.dish_storage import get_dishes_with_categories
-                dishes_categories = get_dishes_with_categories()
+                from storage.dish_storage import get_all_dishes_with_categories
+                dishes_categories = get_all_dishes_with_categories()
 
                 if not dishes_categories:
-                    bot.reply_to(message, "Блюд пока нет")
+                    bot.reply_to(message, "🍽 Блюд пока нет")
                     return
 
                 # Группируем по категориям
@@ -362,20 +362,22 @@ def main():
                 for dish, category in dishes_categories:
                     grouped[category.name].append(dish)
 
-                # Формируем ответ
-                response = []
+                # Формируем красивый ответ
+                response = ["📋 <b>Все блюда в меню:</b>"]
                 for category_name, dishes in grouped.items():
-                    dish_list = "\n".join([
-                        f"  - {d.name} ({d.price} руб.)" +
-                        (f" - {d.description}" if d.description else "")
-                        for d in dishes
-                    ])
-                    response.append(f"🍽 {category_name}:\n{dish_list}")
+                    dish_list = []
+                    for dish in dishes:
+                        dish_info = f"  - {dish.name} - {dish.price} руб."
+                        if dish.description:
+                            dish_info += f" ({dish.description})"
+                        dish_list.append(dish_info)
 
-                bot.reply_to(message, "Все блюда:\n\n" + "\n\n".join(response))
+                    response.append(f"\n🍽 <b>{category_name}:</b>\n" + "\n".join(dish_list))
+
+                bot.reply_to(message, "\n".join(response), parse_mode='HTML')
 
             except Exception as e:
-                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
+                bot.reply_to(message, "❌ Произошла ошибка при получении списка блюд")
                 logger.error(f"Error in all_dishes handler: {e}")
         # @bot.message_handler(commands=['dishes'])
         # def handle_list_dishes(message):
@@ -390,9 +392,19 @@ def main():
         @bot.message_handler(commands=['start'])
         def handle_start(message):
             from models.user import User
-            from storage.user_storage import add_user
+            from storage.user_storage import add_user, get_user_by_telegram_id
+            import time
 
             try:
+                # Проверяем, есть ли пользователь уже в БД
+                existing_user = get_user_by_telegram_id(message.from_user.id)
+                if existing_user:
+                    bot.reply_to(message, "👋 Вы уже зарегистрированы!")
+                    return
+
+                # Задержка для защиты от спама
+                time.sleep(0.5)
+
                 user = User(
                     telegram_id=message.from_user.id,
                     username=message.from_user.username,
@@ -408,7 +420,8 @@ def main():
         📌 Основные команды:
         /help - Показать все доступные команды
         /adddish - Добавить новое блюдо
-        /dishes - Просмотреть меню
+        /dishes - Просмотреть меню в выбранной категории
+        /all_dishes - Посмотреть весь ассортимент блюд
 
         Начните с добавления категорий через /addcategory, затем добавляйте блюда через /adddish.
                 """
@@ -416,7 +429,8 @@ def main():
 
             except Exception as e:
                 logger.error(f"Ошибка регистрации: {e}")
-                bot.reply_to(message, "❌ Ошибка регистрации. Попробуйте еще раз.")
+                time.sleep(1)  # Добавляем задержку при ошибке
+                bot.reply_to(message, "🔁 Проблема с регистрацией. Попробуйте снова через минуту.")
 
 
         @bot.message_handler(commands=['help'])
@@ -427,7 +441,8 @@ def main():
                     ('/addcategory', 'Добавить категорию блюд'),
                     ('/categories', 'Просмотреть категории'),
                     ('/adddish', 'Добавить новое блюдо'),
-                    ('/dishes', 'Просмотреть блюда по категориям')
+                    ('/dishes', 'Просмотреть блюда в выбранной категории'),
+                    ('/all_dishes', 'Посмотреть весь ассортимент блюд')
                 ],
                 '🛠 Управление': [
                     ('/start', 'Перезапустить бота'),

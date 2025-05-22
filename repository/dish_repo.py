@@ -42,14 +42,12 @@ def create_dish(
     db.refresh(db_dish)
     return db_dish
 
-def get_dishes_with_categories(db: Session) -> list[tuple[Dish, Category]]:
+
+
+
+def get_all_dishes_with_categories(db: Session) -> list[tuple[Dish, Category]]:
     """Получить все блюда с информацией о категориях"""
-    return db.query(Dish, Category).join(Category).all()
-
-
-# def get_all_dishes_with_categories(db: Session) -> list[tuple[Dish, Category]]:
-#     """Получить все блюда с информацией о категориях"""
-#     return db.query(Dish, Category).join(Category, Dish.category_id == Category.id).all()
+    return db.query(Dish, Category).join(Category, Dish.category_id == Category.id).all()
 
 
 
