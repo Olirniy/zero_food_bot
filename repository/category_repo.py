@@ -1,24 +1,25 @@
-from typing import List, Optional, TYPE_CHECKING
+from sqlalchemy.orm import Session
+from models.category import Category
+
+def get_category_by_id(db: Session, category_id: int) -> Category:
+    return db.query(Category).filter(Category.id == category_id).first()
+
+def get_all_categories(db: Session) -> list[Category]:
+    return db.query(Category).all()
 
 
+def create_category(db: Session, name: str, description: str = None) -> Category:
+    # Проверяем, существует ли категория с таким именем
+    existing_category = db.query(Category).filter(Category.name == name).first()
+    if existing_category:
+        raise ValueError(f"Категория '{name}' уже существует")
 
-if TYPE_CHECKING:
-    from models.category import Category
-    from storage.category_storage import CategoryStorage
-
-
-class CategoryRepository:
-    def __init__(self, storage: 'CategoryStorage') -> None:
-        self._storage: 'CategoryStorage' = storage
-
-    def get_all(self) -> List['Category']:
-        pass
-
-    def get_by_id(self, id: int) -> Optional['Category']:
-        pass
-
-    def create(self, category: 'Category') -> None:
-        pass
-
-    def delete_all(self) -> None:
-        pass
+    db_category = Category(name=name, description=description)
+    db.add(db_category)
+    try:
+        db.commit()
+        db.refresh(db_category)
+        return db_category
+    except Exception as e:
+        db.rollback()
+        raise ValueError(f"Ошибка при создании категории: {str(e)}")

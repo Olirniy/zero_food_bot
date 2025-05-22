@@ -1,24 +1,16 @@
-from typing import Optional, List, TYPE_CHECKING
+from sqlalchemy.orm import Session
+from storage.db import SessionLocal
+from repository.category_repo import get_all_categories, create_category
 
-if TYPE_CHECKING:
-    from models.category import Category
-    from storage.db_session import DBSession
+def add_category(name: str, description: str = None):
+    with SessionLocal() as session:
+        create_category(session, name, description)
 
+def get_categories() -> list:
+    with SessionLocal() as session:
+        return get_all_categories(session)
 
-class CategoryStorage:
-    def __init__(self, db_session: 'DBSession', sql_data: dict[str, str]) -> None:
-        self._db_session = db_session
-        self._sql_data = sql_data  #данные по названиям табличек, пути к БД и т.п.
-        self._init_table()
+def get_categories():
+    with SessionLocal() as session:
+        return get_all_categories(session)
 
-    def _init_table(self) -> None:
-        pass
-
-    def save(self, category: 'Category') -> None:
-        pass
-
-    def load_by_id(self, id: int) -> Optional['Category']:
-        pass
-
-    def load_all(self) -> List['Category']:
-        pass

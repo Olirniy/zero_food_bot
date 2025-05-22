@@ -1,17 +1,51 @@
 import logging
-import datetime
 from logging.handlers import TimedRotatingFileHandler
-from config import LOGS_DIRECTORY
+import os
+from datetime import datetime
+import sys
 
-today = datetime.datetime.now().strftime("%d-%m-%Y")
-handler = TimedRotatingFileHandler(f"{LOGS_DIRECTORY}log_{today}.log",
-                                   when="midnight",
-                                   interval=1,
-                                   backupCount=7,
-                                   encoding="utf-8")
-handler.suffix = "%d-%m-%Y.log"
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - [%(module)s.%(funcName)s] - %(message)s")
-handler.setFormatter(formatter)
-logger = logging.getLogger("MyLogger")
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+
+try:
+    # Получаем абсолютный путь к директории проекта
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
+    # Создаем папку logs (с дополнительными проверками)
+    if not os.path.exists(LOG_DIR):
+        try:
+            os.makedirs(LOG_DIR)
+        except FileExistsError:
+            pass  # Папка уже существует (многопоточная конкуренция)
+        except Exception as e:
+            print(f"FATAL: Cannot create logs directory: {e}")
+            sys.exit(1)
+
+    # Настройка логгера
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    # Формат сообщений
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    # Файловый обработчик
+    file_handler = TimedRotatingFileHandler(
+        filename=os.path.join(LOG_DIR, 'foodbot.log'),
+        when='midnight',
+        backupCount=7,
+        encoding='utf-8'
+    )
+    file_handler.setFormatter(formatter)
+
+    # Консольный обработчик
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+
+    # Добавляем обработчики
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    logger.info("Logger successfully configured")
+
+except Exception as e:
+    print(f"CRITICAL: Failed to initialize logger: {e}")
+    raise

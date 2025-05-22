@@ -2,6 +2,16 @@ import json
 import os
 from dotenv import load_dotenv
 
+load_dotenv()  # Загружаем переменные из .env
+
+# Основной токен (обязательный)
+TG_API_KEY = os.getenv("ZERO_FOOD_BOT_API_KEY")
+
+if not TG_API_KEY:
+    raise ValueError("Токен бота не найден! Добавьте ZERO_FOOD_BOT_API_KEY в .env файл")
+
+
+
 def load_config():
     #Загружаем конфиг из файла
     with open("config.json", "r", encoding="utf-8") as config_file:

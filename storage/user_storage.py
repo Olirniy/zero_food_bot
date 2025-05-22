@@ -1,21 +1,16 @@
-from typing import Optional, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from models.user import User
-    from storage.db_session import DBSession
+from sqlalchemy.orm import Session
+from storage.db import SessionLocal
+from models.user import User
 
 
-class UserStorage:
-    def __init__(self, db_session: 'DBSession', sql_data: dict[str, str]) -> None:
-        self._db_session = db_session
-        self._sql_data = sql_data
-        self._init_table()
 
-    def _init_table(self) -> None:
-        pass
+def user_exists(telegram_id: int) -> bool:
+    with SessionLocal() as session:
+        return session.query(User).filter(User.telegram_id == telegram_id).first() is not None
 
-    def save(self, user: 'User') -> None:
-        pass
+def add_user(user: User):
+    if not user_exists(user.telegram_id):
+        with SessionLocal() as session:
+            session.add(user)
+            session.commit()
 
-    def load_by_telegram_id(self, telegram_id: int) -> Optional['User']:
-        pass
