@@ -1,9 +1,23 @@
-import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 from datetime import datetime
 import sys
+import logging
+from logging.handlers import RotatingFileHandler
 
+
+def setup_logger():
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    handler = RotatingFileHandler(
+        'logs/bot_errors.log',
+        maxBytes=5 * 1024 * 1024,
+        backupCount=3
+    )
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 try:
     # Получаем абсолютный путь к директории проекта

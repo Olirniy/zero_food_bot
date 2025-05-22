@@ -379,15 +379,7 @@ def main():
             except Exception as e:
                 bot.reply_to(message, "❌ Произошла ошибка при получении списка блюд")
                 logger.error(f"Error in all_dishes handler: {e}")
-        # @bot.message_handler(commands=['dishes'])
-        # def handle_list_dishes(message):
-        #     from storage.dish_storage import get_all_dishes_by_category
-        #     dishes = get_all_dishes_by_category(1)  # Получаем блюда из категории с ID=1
-        #     if dishes:
-        #         response = "\n".join([f"{d.id}. {d.name} — {d.price} руб." for d in dishes])
-        #     else:
-        #         response = "Блюд пока нет"
-        #     bot.reply_to(message, f"Блюда:\n{response}")
+
 
         @bot.message_handler(commands=['start'])
         def handle_start(message):
@@ -422,6 +414,7 @@ def main():
         /adddish - Добавить новое блюдо
         /dishes - Просмотреть меню в выбранной категории
         /all_dishes - Посмотреть весь ассортимент блюд
+        /ping - Проверь коннект с сервером
 
         Начните с добавления категорий через /addcategory, затем добавляйте блюда через /adddish.
                 """
@@ -446,7 +439,8 @@ def main():
                 ],
                 '🛠 Управление': [
                     ('/start', 'Перезапустить бота'),
-                    ('/help', 'Помощь по командам')
+                    ('/help', 'Помощь по командам'),
+                    ('/ping', 'Проверь коннект с сервером')
                 ]
             }
 
@@ -458,6 +452,13 @@ def main():
                 help_text += "\n\n"
 
             bot.reply_to(message, help_text, parse_mode='HTML')
+
+        @bot.message_handler(commands=['ping'])
+        def ping(message):
+            try:
+                bot.reply_to(message, "🏓 Pong!")
+            except Exception as e:
+                logger.error(f"Connection error: {e}")
 
         # Запуск бота
 
@@ -474,7 +475,7 @@ if __name__ == "__main__":
     try:
         # Удерживаем выполнение, чтобы бот работал
         while True:
-            time.sleep(1)
+            time.sleep(0.5)
     except KeyboardInterrupt:
         print("Бот остановлен.")
 

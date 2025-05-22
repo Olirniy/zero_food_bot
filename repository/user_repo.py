@@ -14,3 +14,4 @@ class UserRepository:
 
     def get_by_telegram_id(self, telegram_id: int) -> Optional['User']:
         pass
+
