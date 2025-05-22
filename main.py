@@ -1,10 +1,165 @@
 import telebot
 from config import TG_API_KEY
 from log_funcs import logger
-# from storage.db import init_db
+from storage.db import init_db
 import time
 from storage.db import engine, init_db
 from sqlalchemy import inspect
+from telebot import types
+import logging
+from urllib.parse import urlparse
+
+logger = logging.getLogger(__name__)
+
+
+class DishHandler:
+    def __init__(self, bot):
+        self.bot = bot
+
+    def log_input(self, step: str, user_input: str, user_id: int):
+        """Логирование ввода пользователя"""
+        logger.info(f"User {user_id} at step '{step}': {user_input}")
+
+    def process_dish_image(self, message, category_id, dish_name, description, price):
+        try:
+            from storage.dish_storage import add_dish
+
+            self.log_input("image_url", message.text, message.from_user.id)
+            image_url = None if message.text == '/skip' else message.text.strip()
+
+            if image_url:
+                parsed = urlparse(image_url)
+                if not all([parsed.scheme, parsed.netloc]):
+                    raise ValueError("URL должен начинаться с http:// или https://")
+                if len(image_url) > 255:
+                    raise ValueError("URL слишком длинный (макс. 255 символов)")
+
+            add_dish(
+                name=str(dish_name),
+                description=str(description) if description else None,
+                price=float(price),
+                category_id=int(category_id),
+                image_url=str(image_url) if image_url else None
+            )
+            self.bot.reply_to(message, f"✅ Блюдо '{dish_name}' успешно добавлено!")
+
+        except ValueError as e:
+            self.bot.reply_to(message, f"❌ {str(e)}")
+            logger.error(f"Image URL error from user {message.from_user.id}: {e}")
+        except Exception as e:
+            self.bot.reply_to(message, "❌ Произошла ошибка при добавлении блюда")
+            logger.error(f"Dish addition error from user {message.from_user.id}: {e}")
+
+    def process_dish_price(self, message, category_id, dish_name, description):
+        try:
+            self.log_input("price", message.text, message.from_user.id)
+            price = message.text.strip().replace(',', '.')
+
+            if not price.replace('.', '').isdigit():
+                raise ValueError("Цена должна быть числом (например: 250.50)")
+
+            price = float(price)
+            if price <= 0:
+                raise ValueError("Цена должна быть больше нуля")
+
+            msg = self.bot.reply_to(message, "Введите URL изображения (или /skip):")
+            self.bot.register_next_step_handler(msg,
+                                                lambda m: self.process_dish_image(m, category_id, dish_name,
+                                                                                  description, price))
+
+        except ValueError as e:
+            self.bot.reply_to(message, f"❌ {str(e)}")
+            logger.warning(f"Invalid price from user {message.from_user.id}: {message.text}")
+            msg = self.bot.reply_to(message, "Пожалуйста, введите цену еще раз:")
+            self.bot.register_next_step_handler(msg,
+                                                lambda m: self.process_dish_price(m, category_id, dish_name,
+                                                                                  description))
+        except Exception as e:
+            self.bot.reply_to(message, "❌ Критическая ошибка")
+            logger.error(f"Price processing error from user {message.from_user.id}: {e}")
+
+    def process_dish_description(self, message, category_id, dish_name):
+        try:
+            self.log_input("description", message.text, message.from_user.id)
+            description = None if message.text == '/skip' else message.text.strip()
+
+            if description and len(description) > 255:
+                raise ValueError("Описание слишком длинное (макс. 255 символов)")
+
+            msg = self.bot.reply_to(message, "Введите цену блюда (например: 250.50):")
+            self.bot.register_next_step_handler(msg,
+                                                lambda m: self.process_dish_price(m, category_id, dish_name,
+                                                                                  description))
+
+        except ValueError as e:
+            self.bot.reply_to(message, f"❌ {str(e)}")
+            logger.warning(f"Invalid description from user {message.from_user.id}: {message.text}")
+        except Exception as e:
+            self.bot.reply_to(message, "❌ Ошибка ввода")
+            logger.error(f"Description processing error from user {message.from_user.id}: {e}")
+
+    def process_dish_name(self, message, category_id):
+        try:
+            self.log_input("dish_name", message.text, message.from_user.id)
+            dish_name = message.text.strip()
+
+            if dish_name.isdigit():
+                raise ValueError("Название не может быть числом")
+            if len(dish_name) > 100:
+                raise ValueError("Название слишком длинное (макс. 100 символов)")
+
+            msg = self.bot.reply_to(message, "Введите описание блюда (или /skip):")
+            self.bot.register_next_step_handler(msg,
+                                                lambda m: self.process_dish_description(m, category_id,
+                                                                                        dish_name))
+
+        except ValueError as e:
+            self.bot.reply_to(message, f"❌ {str(e)}")
+            logger.warning(f"Invalid dish name from user {message.from_user.id}: {message.text}")
+            self.handle_add_dish(message)  # Перезапускаем процесс
+        except Exception as e:
+            self.bot.reply_to(message, "❌ Ошибка ввода")
+            logger.error(f"Name processing error from user {message.from_user.id}: {e}")
+
+    def process_category_choice(self, message):
+        try:
+            self.log_input("category", message.text, message.from_user.id)
+            category_id = int(message.text.split('.')[0])
+            msg = self.bot.reply_to(message, "Введите название блюда:",
+                                    reply_markup=types.ReplyKeyboardRemove())
+            self.bot.register_next_step_handler(msg,
+                                                lambda m: self.process_dish_name(m, category_id))
+
+        except (IndexError, ValueError):
+            self.bot.reply_to(message, "⚠️ Пожалуйста, выберите категорию из списка")
+            logger.warning(f"Invalid category choice from user {message.from_user.id}: {message.text}")
+            self.handle_add_dish(message)  # Перезапускаем процесс
+        except Exception as e:
+            self.bot.reply_to(message, f"❌ Ошибка: {str(e)}")
+            logger.error(f"Category choice error from user {message.from_user.id}: {e}")
+
+    def handle_add_dish(self, message):
+        try:
+            from storage.category_storage import get_categories
+
+            categories = get_categories()
+            if not categories:
+                self.bot.reply_to(message,
+                                  "❌ Нет доступных категорий. Сначала создайте категорию через /addcategory")
+                return
+
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+            for cat in categories:
+                markup.add(f"{cat.id}. {cat.name}")
+
+            msg = self.bot.reply_to(message, "Выберите категорию:", reply_markup=markup)
+            self.bot.register_next_step_handler(msg, self.process_category_choice)
+
+        except Exception as e:
+            self.bot.reply_to(message, f"❌ Ошибка: {str(e)}")
+            logger.error(f"Add dish init error from user {message.from_user.id}: {e}")
+
+
 
 def check_tables():
     init_db()
@@ -18,9 +173,20 @@ def main():
     try:
         # Инициализация БД (без пересоздания таблиц)
         init_db()
+        check_tables()
 
         bot = telebot.TeleBot(TG_API_KEY)
-        logger.info("Бот запущен")
+
+        # Инициализация обработчика блюд
+        dish_handler = DishHandler(bot)
+
+        # Регистрация обработчика
+        @bot.message_handler(commands=['adddish'])
+        def add_dish_wrapper(message):
+            logger.info(f"User {message.from_user.id} started /adddish command")
+            dish_handler.handle_add_dish(message)
+
+
 
         @bot.message_handler(commands=['addcategory'])
         def handle_add_category(message):
@@ -75,7 +241,6 @@ def main():
                 logger.error(f"Error adding category: {e}")
 
 
-
         @bot.message_handler(commands=['categories'])
         def handle_list_categories(message):
             from storage.category_storage import get_categories
@@ -86,135 +251,141 @@ def main():
                 response = "Категорий пока нет"
             bot.reply_to(message, f"Категории:\n{response}")
 
-        @bot.message_handler(commands=['adddish'])
-        def handle_add_dish(message):
-            try:
-                # Сначала запрашиваем категорию
-                msg = bot.reply_to(message, "📝 Введите ID категории для нового блюда:")
-                bot.register_next_step_handler(msg, process_dish_category_step)
-            except Exception as e:
-                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
-                logger.error(f"Error in adddish handler: {e}")
-
-        def process_dish_category_step(message):
-            try:
-                if message.text.startswith('/'):
-                    bot.reply_to(message, "⚠️ Пожалуйста, введите ID категории, а не команду")
-                    return
-
-                try:
-                    category_id = int(message.text.strip())
-                except ValueError:
-                    bot.reply_to(message, "⚠️ ID категории должен быть числом")
-                    return
-
-                msg = bot.reply_to(message, "📝 Введите название блюда:")
-                bot.register_next_step_handler(msg, process_dish_name_step, category_id)
-            except Exception as e:
-                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
-                logger.error(f"Error in process_dish_category_step: {e}")
-
-        def process_dish_name_step(message, category_id):
-            try:
-                if message.text.startswith('/'):
-                    bot.reply_to(message, "⚠️ Пожалуйста, введите название блюда, а не команду")
-                    return
-
-                dish_name = message.text.strip()
-                if len(dish_name) > 100:  # Ограничение как в вашей модели (VARCHAR(100))
-                    bot.reply_to(message, "⚠️ Название слишком длинное (макс. 100 символов)")
-                    return
-
-                msg = bot.reply_to(message, "📝 Введите описание блюда (или /skip для пропуска):")
-                bot.register_next_step_handler(msg, process_dish_desc_step, category_id, dish_name)
-            except Exception as e:
-                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
-                logger.error(f"Error in process_dish_name_step: {e}")
-
-        def process_dish_desc_step(message, category_id, dish_name):
-            try:
-                if message.text == '/skip':
-                    dish_description = None
-                else:
-                    if message.text.startswith('/'):
-                        bot.reply_to(message, "⚠️ Пожалуйста, введите описание блюда, а не команду")
-                        return
-
-                    dish_description = message.text.strip()
-                    if len(dish_description) > 255:  # Ограничение как в вашей модели (VARCHAR(255))
-                        bot.reply_to(message, "⚠️ Описание слишком длинное (макс. 255 символов)")
-                        return
-
-                msg = bot.reply_to(message, "📝 Введите цену блюда (только число, например 250.50):")
-                bot.register_next_step_handler(msg, process_dish_price_step, category_id, dish_name, dish_description)
-            except Exception as e:
-                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
-                logger.error(f"Error in process_dish_desc_step: {e}")
-
-        def process_dish_price_step(message, category_id, dish_name, dish_description):
-            try:
-                if message.text.startswith('/'):
-                    bot.reply_to(message, "⚠️ Пожалуйста, введите цену, а не команду")
-                    return
-
-                try:
-                    price = float(message.text.strip())
-                    if price <= 0:
-                        bot.reply_to(message, "⚠️ Цена должна быть больше нуля")
-                        return
-                except ValueError:
-                    bot.reply_to(message, "⚠️ Цена должна быть числом (например: 250 или 199.99)")
-                    return
-
-                msg = bot.reply_to(message, "📝 Введите URL изображения (или /skip для пропуска):")
-                bot.register_next_step_handler(msg, process_dish_image_step, category_id, dish_name, dish_description,
-                                               price)
-            except Exception as e:
-                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
-                logger.error(f"Error in process_dish_price_step: {e}")
-
-        def process_dish_image_step(message, category_id, dish_name, dish_description, price):
-            try:
-                from storage.dish_storage import add_dish  # Импортируем как в вашем исходном коде
-
-                if message.text == '/skip':
-                    image_url = None
-                else:
-                    if message.text.startswith('/'):
-                        bot.reply_to(message, "⚠️ Пожалуйста, введите URL, а не команду")
-                        return
-
-                    image_url = message.text.strip()
-                    if len(image_url) > 255:  # Ограничение как в вашей модели (VARCHAR(255))
-                        bot.reply_to(message, "⚠️ URL слишком длинный (макс. 255 символов)")
-                        return
-
-                # Добавляем блюдо
-                add_dish(
-                    category_id=category_id,
-                    name=dish_name,
-                    description=dish_description,
-                    price=price,
-                    image_url=image_url
-                )
-                bot.reply_to(message, f"✅ Блюдо '{dish_name}' успешно добавлено!")
-
-            except ValueError as e:
-                bot.reply_to(message, f"❌ {str(e)}")
-            except Exception as e:
-                bot.reply_to(message, "❌ Произошла ошибка при добавлении блюда")
-                logger.error(f"Error adding dish: {e}")
 
         @bot.message_handler(commands=['dishes'])
         def handle_list_dishes(message):
-            from storage.dish_storage import get_all_dishes_by_category
-            dishes = get_all_dishes_by_category(1)  # Получаем блюда из категории с ID=1
-            if dishes:
-                response = "\n".join([f"{d.id}. {d.name} — {d.price} руб." for d in dishes])
-            else:
-                response = "Блюд пока нет"
-            bot.reply_to(message, f"Блюда:\n{response}")
+            from storage.category_storage import get_categories
+            from storage.dish_storage import get_dishes_by_category
 
+            try:
+                # Получаем список всех категорий
+                categories = get_categories()
+                if not categories:
+                    bot.reply_to(message, "Сначала создайте категории через /addcategory")
+                    return
+
+                # Создаем клавиатуру с категориями
+                markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+                for category in categories:
+                    markup.add(f"{category.id}. {category.name}")
+
+                # Просим выбрать категорию
+                msg = bot.reply_to(message, "Выберите категорию для просмотра блюд:", reply_markup=markup)
+                bot.register_next_step_handler(msg, lambda m: process_category_choice(m, categories))
+
+            except Exception as e:
+                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
+                logger.error(f"Error in /dishes command: {e}")
+
+        def process_category_choice(message, categories):
+            try:
+                from storage.dish_storage import get_dishes_by_category
+
+                # Парсим выбор пользователя
+                try:
+                    selected_id = int(message.text.split('.')[0])
+                except (ValueError, IndexError):
+                    raise ValueError("Пожалуйста, выберите категорию из списка")
+
+                # Проверяем, что выбранная категория существует
+                selected_category = next((cat for cat in categories if cat.id == selected_id), None)
+                if not selected_category:
+                    raise ValueError("Выбранная категория не найдена")
+
+                # Получаем блюда для выбранной категории
+                dishes = get_dishes_by_category(selected_id)
+
+                # Формируем ответ
+                if dishes:
+                    response = [f"🍽 Блюда в категории '{selected_category.name}':"]
+                    for dish in dishes:
+                        dish_info = f"  - {dish.name}: {dish.price} руб."
+                        if dish.description:
+                            dish_info += f" ({dish.description})"
+                        response.append(dish_info)
+                    bot.reply_to(message, "\n".join(response), reply_markup=types.ReplyKeyboardRemove())
+                else:
+                    bot.reply_to(message, f"В категории '{selected_category.name}' пока нет блюд",
+                                 reply_markup=types.ReplyKeyboardRemove())
+
+            except ValueError as e:
+                bot.reply_to(message, f"⚠️ {str(e)}")
+                logger.warning(f"Invalid category choice: {message.text}")
+            except Exception as e:
+                bot.reply_to(message, "❌ Произошла ошибка при получении блюд")
+                logger.error(f"Error showing dishes: {e}")
+
+
+        def show_dishes_by_category(message):
+            try:
+                from storage.dish_storage import get_dishes_by_category
+
+                # Парсим выбор пользователя
+                category_id = int(message.text.split('.')[0])
+
+                # Получаем блюда для выбранной категории
+                dishes = get_dishes_by_category(category_id)
+
+                if dishes:
+                    response = "\n".join([
+                        f"{d.id}. {d.name} - {d.price} руб." +
+                        (f" ({d.description})" if d.description else "") +
+                        (f"\n  🖼: {d.image_url}" if d.image_url else "")
+                        for d in dishes
+                    ])
+                    bot.reply_to(message, f"🍽 Блюда в этой категории:\n{response}",
+                                 reply_markup=types.ReplyKeyboardRemove())
+                else:
+                    bot.reply_to(message, "В этой категории пока нет блюд",
+                                 reply_markup=types.ReplyKeyboardRemove())
+
+            except (ValueError, IndexError):
+                bot.reply_to(message, "⚠️ Пожалуйста, выберите категорию из списка")
+                logger.warning(f"Invalid category choice: {message.text}")
+            except Exception as e:
+                bot.reply_to(message, "❌ Произошла ошибка при получении блюд")
+                logger.error(f"Error showing dishes: {e}")
+
+        @bot.message_handler(commands=['all_dishes'])
+        def handle_all_dishes(message):
+            try:
+                from storage.dish_storage import get_dishes_with_categories
+                dishes_categories = get_dishes_with_categories()
+
+                if not dishes_categories:
+                    bot.reply_to(message, "Блюд пока нет")
+                    return
+
+                # Группируем по категориям
+                from collections import defaultdict
+                grouped = defaultdict(list)
+                for dish, category in dishes_categories:
+                    grouped[category.name].append(dish)
+
+                # Формируем ответ
+                response = []
+                for category_name, dishes in grouped.items():
+                    dish_list = "\n".join([
+                        f"  - {d.name} ({d.price} руб.)" +
+                        (f" - {d.description}" if d.description else "")
+                        for d in dishes
+                    ])
+                    response.append(f"🍽 {category_name}:\n{dish_list}")
+
+                bot.reply_to(message, "Все блюда:\n\n" + "\n\n".join(response))
+
+            except Exception as e:
+                bot.reply_to(message, f"❌ Ошибка: {str(e)}")
+                logger.error(f"Error in all_dishes handler: {e}")
+        # @bot.message_handler(commands=['dishes'])
+        # def handle_list_dishes(message):
+        #     from storage.dish_storage import get_all_dishes_by_category
+        #     dishes = get_all_dishes_by_category(1)  # Получаем блюда из категории с ID=1
+        #     if dishes:
+        #         response = "\n".join([f"{d.id}. {d.name} — {d.price} руб." for d in dishes])
+        #     else:
+        #         response = "Блюд пока нет"
+        #     bot.reply_to(message, f"Блюда:\n{response}")
 
         @bot.message_handler(commands=['start'])
         def handle_start(message):
@@ -228,16 +399,59 @@ def main():
                     first_name=message.from_user.first_name
                 )
                 add_user(user)
-                bot.reply_to(message, "✅ Регистрация успешна!")
+
+                welcome_text = """
+        👋 <b>Добро пожаловать в FoodNinja!</b>
+
+        Я помогу вам управлять меню вашего ресторана или кафе.
+
+        📌 Основные команды:
+        /help - Показать все доступные команды
+        /adddish - Добавить новое блюдо
+        /dishes - Просмотреть меню
+
+        Начните с добавления категорий через /addcategory, затем добавляйте блюда через /adddish.
+                """
+                bot.reply_to(message, welcome_text, parse_mode='HTML')
+
             except Exception as e:
                 logger.error(f"Ошибка регистрации: {e}")
-                bot.reply_to(message, "❌ Ошибка регистрации")
+                bot.reply_to(message, "❌ Ошибка регистрации. Попробуйте еще раз.")
+
+
+        @bot.message_handler(commands=['help'])
+        def handle_help(message):
+            logger.info(f"User {message.from_user.id} requested help")
+            commands = {
+                '🍽 Меню': [
+                    ('/addcategory', 'Добавить категорию блюд'),
+                    ('/categories', 'Просмотреть категории'),
+                    ('/adddish', 'Добавить новое блюдо'),
+                    ('/dishes', 'Просмотреть блюда по категориям')
+                ],
+                '🛠 Управление': [
+                    ('/start', 'Перезапустить бота'),
+                    ('/help', 'Помощь по командам')
+                ]
+            }
+
+            help_text = "<b>🍴 FoodNinja Bot - Список команд</b>\n\n"
+
+            for section, cmds in commands.items():
+                help_text += f"<b>{section}:</b>\n"
+                help_text += "\n".join([f"{cmd[0]} - {cmd[1]}" for cmd in cmds])
+                help_text += "\n\n"
+
+            bot.reply_to(message, help_text, parse_mode='HTML')
 
         # Запуск бота
+
+
+        logger.info("Бот запущен")
         bot.infinity_polling(long_polling_timeout=10)
 
     except Exception as e:
-        logger.critical(f"Фатальная ошибка: {e}")
+        logger.error(f"Ошибка в main: {e}")
         raise
 
 if __name__ == "__main__":

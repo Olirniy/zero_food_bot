@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models.dish import Dish
+from models.category import Category
 
 
 def get_dish_by_id(db: Session, dish_id: int) -> Dish:
@@ -10,14 +11,25 @@ def get_dishes_by_category(db: Session, category_id: int) -> list[Dish]:
     return db.query(Dish).filter(Dish.category_id == category_id).all()
 
 
+def get_default_category_id(db: Session) -> int:
+    """Получаем ID первой доступной категории"""
+    category = db.query(Category).first()
+    if not category:
+        raise ValueError("Не найдено ни одной категории. Сначала создайте категорию!")
+    return category.id
+
+
 def create_dish(
-    db: Session,
-    category_id: int,
-    name: str,
-    description: str,
-    price: float,
-    image_url: str = None
-):
+        db: Session,
+        name: str,
+        description: str,
+        price: float,
+        image_url: str = None,
+        category_id: int = None
+) -> Dish:
+    if category_id is None:
+        category_id = get_default_category_id(db)
+
     db_dish = Dish(
         category_id=category_id,
         name=name,
@@ -29,6 +41,15 @@ def create_dish(
     db.commit()
     db.refresh(db_dish)
     return db_dish
+
+def get_dishes_with_categories(db: Session) -> list[tuple[Dish, Category]]:
+    """Получить все блюда с информацией о категориях"""
+    return db.query(Dish, Category).join(Category).all()
+
+
+# def get_all_dishes_with_categories(db: Session) -> list[tuple[Dish, Category]]:
+#     """Получить все блюда с информацией о категориях"""
+#     return db.query(Dish, Category).join(Category, Dish.category_id == Category.id).all()
 
 
 

@@ -1,17 +1,90 @@
 from sqlalchemy.orm import Session
 from storage.db import SessionLocal
-from repository.dish_repo import get_dish_by_id, get_dishes_by_category, create_dish
+import logging
+
+
+logger = logging.getLogger(__name__)
+from repository.dish_repo import (
+    get_dish_by_id,
+    get_dishes_by_category,
+    create_dish
+)
 
 
 
-def add_dish(category_id: int, name: str, description: str, price: float, image_url: str = None):
+
+def add_dish(
+    name: str,
+    description: str,
+    price: float,
+    category_id: int,
+    image_url: str = None
+):
     with SessionLocal() as session:
-        create_dish(session, category_id, name, description, price, image_url)
+        try:
+            # Явное преобразование типов
+            dish_data = {
+                'name': str(name),
+                'description': str(description) if description else None,
+                'price': float(price),
+                'category_id': int(category_id),
+                'image_url': str(image_url) if image_url else None
+            }
+            return create_dish(session, **dish_data)
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Dish creation failed: {e}")
+            raise
 
+
+# def get_dishes_with_categories():
+#     """Получить все блюда с информацией о категориях"""
+#     with SessionLocal() as session:
+#         try:
+#             from repository.dish_repo import get_dishes_with_categories as repo_get_dishes_with_categories
+#             return repo_get_dishes_with_categories(session)
+#         except Exception as e:
+#             logger.error(f"Error getting dishes with categories: {e}")
+#             raise
+
+def get_dishes_by_category(category_id: int):
+    """Получить блюда по ID категории"""
+    with SessionLocal() as session:
+        try:
+            from repository.dish_repo import get_dishes_by_category as repo_get_dishes
+            return repo_get_dishes(session, category_id)
+        except Exception as e:
+            logger.error(f"Error getting dishes by category: {e}")
+            raise
+
+
+
+# def add_dish(
+#     name: str,
+#     description: str,
+#     price: float,
+#     image_url: str = None,
+#     category_id: int = None
+# ):
+#     with SessionLocal() as session:
+#         return create_dish(
+#             session,
+#             name=name,
+#             description=description,
+#             price=price,
+#             image_url=image_url,
+#             category_id=category_id
+#         )
+
+def get_dish(dish_id: int):
+    with SessionLocal() as session:
+        return get_dish_by_id(session, dish_id)
 
 def get_all_dishes_by_category(category_id: int) -> list:
     with SessionLocal() as session:
         return get_dishes_by_category(session, category_id)
+
+
 
 
 

@@ -5,6 +5,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+
+#from models.base import Base  # Импортируйте все модели
+
+# def init_db():
+#     engine = create_engine('sqlite:///foodbot.db')
+#     Base.metadata.create_all(engine)  # Создаст только недостающие таблицы
+#     return engine
+
 # 1. Сначала создаем базовый класс
 Base = declarative_base()
 
