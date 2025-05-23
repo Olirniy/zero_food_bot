@@ -1,0 +1,151 @@
+2025-05-20 22:49:13,020 - log_funcs - INFO - Logger successfully configured
+2025-05-20 22:49:14,543 - log_funcs - INFO - Bot instance created
+2025-05-20 22:49:14,548 - log_funcs - INFO - Database initialized
+2025-05-20 22:49:14,552 - log_funcs - WARNING - Bot extensions not found
+2025-05-20 22:49:14,553 - log_funcs - INFO - Starting bot polling...
+2025-05-20 23:00:04,296 - log_funcs - INFO - Logger successfully configured
+2025-05-20 23:00:05,840 - log_funcs - INFO - Bot instance created
+2025-05-20 23:00:05,847 - log_funcs - INFO - Database initialized
+2025-05-20 23:00:05,854 - log_funcs - WARNING - Bot extensions not found
+2025-05-20 23:00:05,854 - log_funcs - INFO - Starting bot polling...
+2025-05-20 23:15:55,591 - log_funcs - INFO - Logger successfully configured
+2025-05-20 23:15:57,098 - log_funcs - INFO - Bot instance created
+2025-05-20 23:15:57,104 - log_funcs - INFO - Database initialized
+2025-05-20 23:15:57,106 - log_funcs - WARNING - Bot extensions not found
+2025-05-20 23:15:57,107 - log_funcs - INFO - Starting bot polling...
+2025-05-20 23:17:37,350 - log_funcs - ERROR - Registration error: User.__init__() got an unexpected keyword argument 'user_id'
+2025-05-20 23:47:36,534 - log_funcs - INFO - Logger successfully configured
+2025-05-20 23:47:38,131 - log_funcs - INFO - Bot instance created
+2025-05-20 23:47:38,138 - log_funcs - INFO - Database initialized
+2025-05-20 23:47:38,143 - log_funcs - WARNING - Bot extensions not found
+2025-05-20 23:47:38,143 - log_funcs - INFO - Starting bot polling...
+2025-05-20 23:47:50,297 - log_funcs - ERROR - Registration error: (sqlite3.OperationalError) no such table: users
+[SQL: SELECT users.id AS users_id, users.telegram_id AS users_telegram_id, users.username AS users_username, users.first_name AS users_first_name 
+FROM users 
+WHERE users.telegram_id = ?
+ LIMIT ? OFFSET ?]
+[parameters: (7655349397, 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\main.py", line 40, in handle_start
+    if not storage.load_by_telegram_id(user.telegram_id):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\storage\user_storage.py", line 19, in load_by_telegram_id
+    return session.query(User).filter(User._telegram_id == telegram_id).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2748, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2847, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2308, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+[SQL: SELECT users.id AS users_id, users.telegram_id AS users_telegram_id, users.username AS users_username, users.first_name AS users_first_name 
+FROM users 
+WHERE users.telegram_id = ?
+ LIMIT ? OFFSET ?]
+[parameters: (7655349397, 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-05-20 23:49:07,344 - log_funcs - ERROR - Registration error: (sqlite3.OperationalError) no such table: users
+[SQL: SELECT users.id AS users_id, users.telegram_id AS users_telegram_id, users.username AS users_username, users.first_name AS users_first_name 
+FROM users 
+WHERE users.telegram_id = ?
+ LIMIT ? OFFSET ?]
+[parameters: (7655349397, 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\main.py", line 40, in handle_start
+    if not storage.load_by_telegram_id(user.telegram_id):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\storage\user_storage.py", line 19, in load_by_telegram_id
+    return session.query(User).filter(User._telegram_id == telegram_id).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2748, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2847, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2308, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\user\Documents\GitHub\zero_food_bot\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+[SQL: SELECT users.id AS users_id, users.telegram_id AS users_telegram_id, users.username AS users_username, users.first_name AS users_first_name 
+FROM users 
+WHERE users.telegram_id = ?
+ LIMIT ? OFFSET ?]
+[parameters: (7655349397, 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)

@@ -1,0 +1,84 @@
+2025-05-21 00:01:03,045 - log_funcs - INFO - Logger successfully configured
+2025-05-21 00:01:04,602 - log_funcs - INFO - Bot instance created
+2025-05-21 00:01:04,605 - log_funcs - INFO - Database initialized
+2025-05-21 00:01:04,614 - log_funcs - WARNING - Bot extensions not found
+2025-05-21 00:01:04,614 - log_funcs - INFO - Starting bot polling...
+2025-05-21 06:53:00,398 - log_funcs - INFO - Logger successfully configured
+2025-05-21 06:53:02,004 - log_funcs - CRITICAL - Bot fatal error: Таблица users не создана!
+2025-05-21 07:01:11,617 - log_funcs - INFO - Logger successfully configured
+2025-05-21 07:01:13,173 - log_funcs - CRITICAL - Bot fatal error: Mapper Mapper[User(users)] could not assemble any primary key columns for mapped table 'users'
+2025-05-21 07:14:32,086 - log_funcs - INFO - Logger successfully configured
+2025-05-21 07:14:33,659 - log_funcs - CRITICAL - Фатальная ошибка: Mapper Mapper[User(users)] could not assemble any primary key columns for mapped table 'users'
+2025-05-21 07:23:46,391 - log_funcs - INFO - Logger successfully configured
+2025-05-21 10:48:36,774 - log_funcs - INFO - Logger successfully configured
+2025-05-21 11:17:15,814 - log_funcs - INFO - Logger successfully configured
+2025-05-21 11:17:17,625 - log_funcs - INFO - Database initialized
+2025-05-21 11:18:16,143 - log_funcs - ERROR - Ошибка: (sqlite3.OperationalError) no such table: users
+[SQL: INSERT INTO users (telegram_id, username, first_name) VALUES (?, ?, ?)]
+[parameters: (7655349397, 'olirniy', 'Данил')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-05-21 11:22:08,524 - log_funcs - INFO - Logger successfully configured
+2025-05-21 11:22:10,077 - log_funcs - INFO - Database initialized
+2025-05-21 11:22:20,752 - log_funcs - ERROR - Ошибка: (sqlite3.OperationalError) no such table: users
+[SQL: INSERT INTO users (telegram_id, username, first_name) VALUES (?, ?, ?)]
+[parameters: (7655349397, 'olirniy', 'Данил')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-05-21 11:35:37,805 - log_funcs - INFO - Logger successfully configured
+2025-05-21 11:35:39,652 - log_funcs - INFO - Database initialized
+2025-05-21 11:37:32,836 - log_funcs - INFO - Logger successfully configured
+2025-05-21 11:37:34,612 - log_funcs - INFO - Database initialized
+2025-05-21 12:23:55,782 - log_funcs - INFO - Logger successfully configured
+2025-05-21 12:23:57,318 - log_funcs - INFO - Бот запущен
+2025-05-21 12:57:25,833 - log_funcs - INFO - Logger successfully configured
+2025-05-21 12:57:27,498 - log_funcs - INFO - Бот запущен
+2025-05-21 13:22:23,989 - log_funcs - INFO - Logger successfully configured
+2025-05-21 13:22:25,585 - log_funcs - INFO - Бот запущен
+2025-05-21 13:55:34,394 - log_funcs - INFO - Logger successfully configured
+2025-05-21 13:55:35,971 - log_funcs - INFO - Бот запущен
+2025-05-21 14:31:44,690 - log_funcs - INFO - Logger successfully configured
+2025-05-21 14:41:12,236 - log_funcs - INFO - Logger successfully configured
+2025-05-21 14:50:44,862 - log_funcs - INFO - Logger successfully configured
+2025-05-21 14:50:46,548 - log_funcs - INFO - Бот запущен
+2025-05-21 20:39:45,203 - log_funcs - INFO - Logger successfully configured
+2025-05-21 20:39:46,910 - log_funcs - INFO - Бот запущен
+2025-05-21 21:06:38,634 - log_funcs - INFO - Logger successfully configured
+2025-05-21 21:06:40,589 - log_funcs - INFO - Бот запущен
+2025-05-21 21:07:18,998 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish.name' failed to locate a name ("name 'Dish' is not defined"). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 21:18:54,702 - log_funcs - INFO - Logger successfully configured
+2025-05-21 21:18:56,188 - log_funcs - INFO - Бот запущен
+2025-05-21 21:19:05,275 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish.name' failed to locate a name ("name 'Dish' is not defined"). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 21:25:02,960 - log_funcs - INFO - Logger successfully configured
+2025-05-21 21:25:04,402 - log_funcs - INFO - Бот запущен
+2025-05-21 21:25:10,600 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish.name' failed to locate a name ("name 'Dish' is not defined"). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 21:44:47,097 - log_funcs - INFO - Logger successfully configured
+2025-05-21 21:44:48,676 - log_funcs - INFO - Бот запущен
+2025-05-21 21:44:55,327 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish.name' failed to locate a name ("name 'Dish' is not defined"). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 21:49:13,609 - log_funcs - INFO - Logger successfully configured
+2025-05-21 21:49:15,064 - log_funcs - INFO - Бот запущен
+2025-05-21 21:49:20,141 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'name' failed to locate a name ("name 'name' is not defined"). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 21:55:22,237 - log_funcs - INFO - Logger successfully configured
+2025-05-21 21:55:23,697 - log_funcs - INFO - Бот запущен
+2025-05-21 21:55:30,218 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish.name' failed to locate a name ("name 'Dish' is not defined"). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 22:01:31,281 - log_funcs - INFO - Logger successfully configured
+2025-05-21 22:01:32,742 - log_funcs - INFO - Бот запущен
+2025-05-21 22:01:38,758 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish' failed to locate a name ('Dish'). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 22:08:20,692 - log_funcs - INFO - Logger successfully configured
+2025-05-21 22:08:22,256 - log_funcs - INFO - Бот запущен
+2025-05-21 22:08:30,293 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish' failed to locate a name ('Dish'). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 22:17:50,281 - log_funcs - INFO - Logger successfully configured
+2025-05-21 22:17:51,968 - log_funcs - INFO - Бот запущен
+2025-05-21 22:17:57,337 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish' failed to locate a name ('Dish'). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 22:30:46,186 - log_funcs - INFO - Logger successfully configured
+2025-05-21 22:30:47,829 - log_funcs - INFO - Бот запущен
+2025-05-21 22:31:00,851 - log_funcs - ERROR - Ошибка регистрации: When initializing mapper Mapper[Category(categories)], expression 'Dish' failed to locate a name ('Dish'). If this is a class name, consider adding this relationship() to the <class 'models.category.Category'> class after both dependent classes have been defined.
+2025-05-21 22:54:46,655 - log_funcs - INFO - Logger successfully configured
+2025-05-21 22:54:48,393 - log_funcs - INFO - Бот запущен
+2025-05-21 22:54:55,340 - log_funcs - ERROR - Ошибка регистрации: (sqlite3.OperationalError) no such table: users
+[SQL: SELECT users.id AS users_id, users.telegram_id AS users_telegram_id, users.username AS users_username, users.first_name AS users_first_name 
+FROM users 
+WHERE users.telegram_id = ?
+ LIMIT ? OFFSET ?]
+[parameters: (7655349397, 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-05-21 23:01:14,492 - log_funcs - INFO - Logger successfully configured
+2025-05-21 23:01:16,248 - log_funcs - INFO - Бот запущен

@@ -174,3 +174,7 @@ cython_debug/
 .pypirc
 
 *~
+
+*.db
+test_db.py
+test_dishes.py
