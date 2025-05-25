@@ -28,6 +28,8 @@ class Order:
 
     @status.setter
     def status(self, status: OrderStatus):
+        if not isinstance(status, OrderStatus):
+            raise TypeError("status must be OrderStatus enum")
         self._status = status
 
     @property
@@ -35,7 +37,9 @@ class Order:
         return self._payment_method
 
     @payment_method.setter
-    def payment_method(self, payment_method: PaymentMethod):
+    def payment_method(self, payment_method: Optional[PaymentMethod]):
+        if payment_method is not None and not isinstance(payment_method, PaymentMethod):
+            raise TypeError("payment_method must be PaymentMethod enum or None")
         self._payment_method = payment_method
 
     @property

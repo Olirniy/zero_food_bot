@@ -9,7 +9,7 @@ class UserStorage:
         self._db = db_session
         self._table = sql_data["tables"]["users"]
 
-    def save(self, user: 'User') -> None:
+    def save(self, user: 'User') -> 'User':  # Изменен тип возврата
         conn = self._db.get_session()
         try:
             if user.id == 0:  # Новый пользователь
@@ -24,6 +24,7 @@ class UserStorage:
                     (user.username, user.id)
                 )
             conn.commit()
+            return user  # Возвращаем сохраненного пользователя
         except Exception as e:
             conn.rollback()
             raise

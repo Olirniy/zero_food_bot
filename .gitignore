@@ -177,4 +177,12 @@ cython_debug/
 
 *.db
 test_db.py
-test_dishes.py
+
+
+test.db
+
+*.pyc
+*.pyo
+*.pyd
+
+zero_food_bot.egg-info

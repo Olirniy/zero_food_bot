@@ -53,6 +53,15 @@ class DBSession:
                 price REAL NOT NULL,
                 photo_url TEXT,
                 FOREIGN KEY (category_id) REFERENCES categories(id)
+            )""",
+            """CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                order_id INTEGER,
+                text TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (order_id) REFERENCES orders(id)
             )"""
         ]
 
@@ -68,3 +77,5 @@ class DBSession:
         if hasattr(self.local, 'conn') and self.local.conn:
             self.local.conn.close()
             self.local.conn = None
+
+

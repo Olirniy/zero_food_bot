@@ -11,6 +11,7 @@ class DishStorage:
         self._init_table()
 
     def _init_table(self) -> None:
+        print("Создаётся таблица:", self._sql_data["tables"]["dishes"])
         with self._db_session.get_session() as conn:
             conn.execute(f'''
                 CREATE TABLE IF NOT EXISTS {self._sql_data["tables"]["dishes"]} (
@@ -26,18 +27,43 @@ class DishStorage:
             ''')
             conn.commit()
 
-    def save(self, dish: 'Dish') -> None:
+    def save(self, dish: Dish) -> Dish:
         with self._db_session.get_session() as conn:
-            conn.execute(
-                f'''
-                INSERT OR REPLACE INTO {self._sql_data["tables"]["dishes"]} 
-                (id, category_id, name, short_description, description, price, photo_url)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''',
-                (dish.id, dish.category_id, dish.name, dish.short_description,
-                 dish.description, dish.price, dish.photo_url)
-            )
+            print(f"Попытка сохранить блюдо: id={dish.id}, name={dish.name}")
+
+            if dish.id == 0:
+                # INSERT
+                cursor = conn.execute(
+                    f"INSERT INTO {self._sql_data['tables']['dishes']} "
+                    "(category_id, name, short_description, description, price, photo_url) "
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    (dish.category_id, dish.name, dish.short_description,
+                     dish.description, dish.price, dish.photo_url)
+                )
+                dish._id = cursor.lastrowid
+                print(f"Создано блюдо с ID: {dish.id}")
+            else:
+                # UPDATE
+                print(f"Обновление существующего блюда ID={dish.id}")
+                conn.execute(
+                    f"UPDATE {self._sql_data['tables']['dishes']} SET "
+                    "category_id=?, name=?, short_description=?, description=?, price=?, photo_url=? "
+                    "WHERE id=?",
+                    (dish.category_id, dish.name, dish.short_description,
+                     dish.description, dish.price, dish.photo_url, dish.id)
+                )
+
             conn.commit()
+            print("Транзакция закоммичена")
+
+            # Проверка
+            saved = conn.execute(
+                f"SELECT id FROM {self._sql_data['tables']['dishes']} WHERE id = ?",
+                (dish.id,)
+            ).fetchone()
+            print(f"Проверка сохранения: {'успешно' if saved else 'не найдено'}")
+
+            return dish
 
     def load_by_id(self, dish_id: int) -> Optional['Dish']:
         with self._db_session.get_session() as conn:

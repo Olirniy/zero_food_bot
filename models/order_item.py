@@ -28,6 +28,5 @@ class OrderItem:
     def quantity(self, quantity: int):
         self._quantity = quantity
 
-
     def get_item_sum(self) -> float:
-        pass
+        return self.dish.price * self.quantity
