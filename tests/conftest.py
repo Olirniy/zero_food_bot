@@ -9,6 +9,11 @@ from models.user import User
 from models.dish import Dish
 from models.order import Order
 from config import SQL_DATA
+from storage.payment_storage import PaymentStorage
+from repository.payment_repo import PaymentRepository
+from models.enums import OrderStatus
+
+
 
 # Добавляем корень проекта в пути Python
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -71,6 +76,15 @@ def db(test_db_path):
                 dish_id INTEGER NOT NULL,
                 quantity INTEGER NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        order_id INTEGER,
+        text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (order_id) REFERENCES orders(id)
+    );
         """)
         conn.commit()
 
@@ -105,26 +119,23 @@ def sample_dish(db):
 
 
 @pytest.fixture
-def sample_order(db, sample_user):
+def sample_order(db, sample_user, order_storage):  # Добавляем order_storage
     """Фикстура создает тестовый заказ"""
     from storage.user_storage import UserStorage
-    from storage.order_storage import OrderStorage
-    from models.enums import OrderStatus  # Добавляем импорт
 
     # Сначала сохраняем пользователя
     user_storage = UserStorage(db, SQL_DATA)
     saved_user = user_storage.save(sample_user)
 
-    # Затем создаем заказ с правильным enum-значением
+    # Затем создаем заказ
     order = Order(
         id=0,
         user_id=saved_user.id,
-        status=OrderStatus.IN_CART,  # Используем enum вместо строки
+        status=OrderStatus.IN_CART,  # Теперь OrderStatus доступен
         payment_method=None,
         created_at=datetime.now()
     )
-    order_storage = OrderStorage(db, SQL_DATA)
-    return order_storage.save(order)
+    return order_storage.save(order)  # Используем переданный order_storage
 
 
 @pytest.fixture(autouse=True)
@@ -141,3 +152,34 @@ def clean_tables(db):
         conn.execute("PRAGMA foreign_keys = ON")
         conn.commit()
     yield
+
+
+@pytest.fixture
+def order_item_storage(db):
+    from storage.order_items_storage import OrderItemStorage
+    return OrderItemStorage(db, SQL_DATA)
+
+@pytest.fixture
+def order_item_repo(order_item_storage):
+    from repository.order_item_repo import OrderItemRepository
+    return OrderItemRepository(order_item_storage)
+
+@pytest.fixture
+def order_storage(db):
+    from storage.order_storage import OrderStorage
+    return OrderStorage(db, SQL_DATA)
+
+@pytest.fixture
+def order_repo(order_storage, order_item_repo):
+    from repository.order_repo import OrderRepository
+    return OrderRepository(order_storage, order_item_repo)
+
+@pytest.fixture
+def payment_storage(db):
+    from storage.payment_storage import PaymentStorage
+    return PaymentStorage(db, SQL_DATA)
+
+@pytest.fixture
+def payment_repo(payment_storage):
+    from repository.payment_repo import PaymentRepository
+    return PaymentRepository(payment_storage)

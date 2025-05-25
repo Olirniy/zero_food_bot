@@ -16,6 +16,7 @@ def load_config():
     db_path = 'test.db' if os.getenv('TEST_MODE') == '1' else 'bot.db'
 
     # Добавляем данные для БД
+    # В функции load_config() добавьте:
     config["SQL_DATA"] = {
         "db_path": db_path,
         "tables": {
@@ -23,7 +24,8 @@ def load_config():
             "categories": "categories",
             "dishes": "dishes",
             "orders": "orders",
-            "order_items": "order_items"
+            "order_items": "order_items",
+            "feedback": "feedback"  # Добавьте эту строку
         }
     }
     return config

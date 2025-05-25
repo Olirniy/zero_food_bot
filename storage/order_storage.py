@@ -2,6 +2,9 @@ from datetime import datetime
 from models.order import Order
 from typing import Optional, List, TYPE_CHECKING
 from models.enums import OrderStatus, PaymentMethod
+from repository.payment_repo import PaymentRepository
+from storage.payment_storage import PaymentStorage
+from config import SQL_DATA  # Если SQL_DATA используется напрямую
 
 if TYPE_CHECKING:
     from models.order import Order
@@ -80,21 +83,16 @@ class OrderStorage:
             try:
                 status = OrderStatus(row[2])
                 payment_method = PaymentMethod(row[3]) if row[3] else None
-                created_at = datetime.fromisoformat(row[4])
-            except ValueError as e:
-                raise ValueError(
-                    f"Invalid data in database for order {id}: "
-                    f"status={row[2]}, payment_method={row[3]}, created_at={row[4]}. "
-                    f"Error: {e}"
+                created_at = row[4]  # Уже datetime, не нужно преобразовывать
+                return Order(
+                    id=row[0],
+                    user_id=row[1],
+                    status=status,
+                    payment_method=payment_method,
+                    created_at=created_at
                 )
-
-            return Order(
-                id=row[0],
-                user_id=row[1],
-                status=status,
-                payment_method=payment_method,
-                created_at=created_at
-            )
+            except ValueError as e:
+                raise ValueError(f"Invalid data in database for order {id}: {e}")
 
     def load_by_user(self, user_id: int) -> List['Order']:
         with self._db_session.get_session() as conn:
@@ -127,3 +125,27 @@ class OrderStorage:
                         f"Error: {e}"
                     )
             return orders
+
+    def complete_order(self, order_id: int, payment_method: str) -> Order:
+        from repository.payment_repo import PaymentRepository
+
+        # 1. Получаем заказ
+        order = self.load_by_id(order_id)
+        if not order:
+            raise ValueError("Order not found")
+
+        # 2. Рассчитываем сумму заказа (нужно реализовать этот метод)
+        total_amount = self.calculate_order_total(order_id)
+
+        # 3. Создаем платеж
+        payment_repo = PaymentRepository(PaymentStorage(self._db_session, self._sql_data))
+        payment = payment_repo.create_payment(
+            order_id=order_id,
+            amount=total_amount,
+            method=payment_method
+        )
+
+        # 4. Обновляем статус заказа
+        order.status = OrderStatus.CONFIRMED
+        order.payment_method = payment_method
+        return self.save(order)

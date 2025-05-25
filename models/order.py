@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import Optional
-
 from models.enums import OrderStatus, PaymentMethod
 from models.order_item import OrderItem
 
 
+
+
+
 class Order:
-    def __init__(self, id: int, user_id: int, status: OrderStatus, created_at: datetime, payment_method: Optional[PaymentMethod]):
+    def __init__(self, id: int, user_id: int, status: OrderStatus, payment_method: Optional[PaymentMethod], created_at: datetime):
         self._id = id
         self._user_id = user_id
         self._status = status

@@ -1,8 +1,18 @@
 import sqlite3
 import os
 import threading
+from datetime import datetime
 from config import SQL_DATA
 
+# Добавьте эти функции адаптации даты перед классом
+def adapt_datetime(dt):
+    return dt.isoformat()
+
+def convert_datetime(ts):
+    return datetime.fromisoformat(ts.decode())
+
+sqlite3.register_adapter(datetime, adapt_datetime)
+sqlite3.register_converter("timestamp", convert_datetime)
 
 class DBSession:
     _instance = None
@@ -22,6 +32,7 @@ class DBSession:
         if not hasattr(self.local, 'conn') or self.local.conn is None:
             self.local.conn = sqlite3.connect(
                 self.db_path,
+                detect_types=sqlite3.PARSE_DECLTYPES,  # Добавлено
                 check_same_thread=False,
                 timeout=30.0
             )
@@ -32,6 +43,7 @@ class DBSession:
 
         return self.local.conn
 
+    # Остальные методы класса остаются без изменений
     def _init_tables(self):
         """Создает все таблицы при первом подключении"""
         tables_sql = [
@@ -61,6 +73,16 @@ class DBSession:
                 text TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (order_id) REFERENCES orders(id)
+            )""",
+            """CREATE TABLE IF NOT EXISTS payments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_id INTEGER NOT NULL,
+                amount REAL NOT NULL,
+                method TEXT NOT NULL,
+                status TEXT NOT NULL,
+                transaction_id TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (order_id) REFERENCES orders(id)
             )"""
         ]

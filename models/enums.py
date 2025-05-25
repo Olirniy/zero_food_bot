@@ -31,3 +31,12 @@ class PaymentMethod(Enum):
     CARD = "CARD"               # Картой при получении
     ONLINE = "ONLINE" # Онлайн оплата картой
     ONLINE_WALLET = "ONLINE_WALLET" # Электронный кошелёк
+
+
+
+class PaymentStatus(Enum):  # Добавляем новый enum
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    REFUNDED = "REFUNDED"
+
