@@ -5,12 +5,101 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b044640-a3b1-49f0-89db-fdaff95098cc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/bot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/init_repositories.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/init_storage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/menu_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/builders/category_menu_builder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/builders/main_menu_builder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/handlers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Cheesecake New York/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Cheesecake New York/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Cheesecake New York/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Chocolate fondant/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Chocolate fondant/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Chocolate fondant/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Panna cotta with raspberry sauce/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Panna cotta with raspberry sauce/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Panna cotta with raspberry sauce/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Tiramisu classic/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Tiramisu classic/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Desserts/Tiramisu classic/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Berry morsels/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Berry morsels/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Berry morsels/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Black tea/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Black tea/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Black tea/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Flavoured coffee/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Flavoured coffee/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Flavoured coffee/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Апельсиновый сок/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Апельсиновый сок/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Drinks/Апельсиновый сок/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Chicken parmesan chop/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Chicken parmesan chop/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Chicken parmesan chop/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Classic Beef Stroganoff/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Classic Beef Stroganoff/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Classic Beef Stroganoff/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Ribeye steak with garlic butter/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Ribeye steak with garlic butter/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Ribeye steak with garlic butter/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Salmon in cream and caviar sauce/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Salmon in cream and caviar sauce/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Main courses/Salmon in cream and caviar sauce/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/BBQ with chicken/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/BBQ with chicken/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/BBQ with chicken/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Four cheeses/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Four cheeses/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Four cheeses/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Margarita/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Margarita/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Margarita/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Пепперони/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Пепперони/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Pizza/Пепперони/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Chicken Caesar/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Chicken Caesar/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Chicken Caesar/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Chicken Caesar/04.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Greek salad Athens/01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Greek salad Athens/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Greek salad Athens/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Greek salad Athens/04.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Quinoa salad with vegetables/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Quinoa salad with vegetables/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Quinoa salad with vegetables/04.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Quinoa salad with vegetables/05.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Salad with roasted beetroot and goat's cheese/01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Salad with roasted beetroot and goat's cheese/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Salad with roasted beetroot and goat's cheese/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Salads/Salad with roasted beetroot and goat's cheese/04.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/King's soup/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/King's soup/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/King's soup/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Mushroom cream soup/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Mushroom cream soup/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Mushroom cream soup/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Pumpkin cream soup/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Pumpkin cream soup/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Pumpkin cream soup/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Ukrainian borscht/01.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Ukrainian borscht/02.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/Sups/Ukrainian borscht/03.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/default_img.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/keyboards/inline_keyboards.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/new_menu.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/zero_food_bot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/zero_food_bot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/category.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/category.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/dish.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/dish.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/enums.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/feedback.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/feedback.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/order.py" afterDir="false" />
@@ -22,17 +111,13 @@
       <change beforePath="$PROJECT_DIR$/repository/order_item_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/order_item_repo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/repository/order_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/order_repo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/repository/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/user_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/category_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/category_storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/db_session.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/db_session.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/dish_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/dish_storage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/feedback_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/feedback_storage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/order_items_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/order_items_storage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/order_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/order_storage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/user_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/user_storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_bot_load.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_bot_load.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_db.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,18 +147,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests in test_db.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.storage.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Olirniy&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Documents/GitHub/zero_food_bot/tests&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests in test_db.py.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.storage.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging Olirniy",
+    "last_opened_file_path": "C:/Users/user/Documents/GitHub/zero_food_bot/tests",
+    "settings.editor.selected.configurable": "terminal"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\user\Documents\GitHub\zero_food_bot\img" />

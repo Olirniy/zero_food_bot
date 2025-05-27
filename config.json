@@ -1,6 +1,14 @@
 {
   "admins" : [463653491],
+  "admin_group_id": "-1002541571453",
   "logs_directory" : "logs/",
+  "default_img": "images/default_img.png",
   "debug_mode" : 0,
-  "logs_directory_deb" : "logs/"
+  "logs_directory_deb" : "logs/",
+  "db_path": "data/database.db",
+  "orders_table_name": "orders",
+  "categories_table_name": "categories",
+  "dishes_table_name": "dishes",
+  "feedback_table_name": "feedbacks",
+  "order_items_table_name": "order_items"
 }
