@@ -5,7 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b044640-a3b1-49f0-89db-fdaff95098cc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/category.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/category.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/dish.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/dish.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/feedback.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/feedback.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/order.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/order.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/order_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/order_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/category_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/category_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/dish_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/dish_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/feedback_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/feedback_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/order_item_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/order_item_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/order_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/order_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/user_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/category_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/category_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/db_session.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/db_session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/dish_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/dish_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/feedback_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/feedback_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/order_items_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/order_items_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/order_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/order_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/user_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage/user_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_bot_load.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_bot_load.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_db.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,18 +62,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python tests.Python tests in test_db.py.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.storage.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Olirniy",
-    "last_opened_file_path": "C:/Users/user/Documents/GitHub/zero_food_bot/tests",
-    "settings.editor.selected.configurable": "terminal"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests in test_db.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.storage.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Olirniy&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Documents/GitHub/zero_food_bot/tests&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\user\Documents\GitHub\zero_food_bot\img" />
