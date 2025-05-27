@@ -1,0 +1,60 @@
+Index: storage.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/storage.py b/storage.py
+new file mode 100644
+--- /dev/null	(date 1747975099773)
++++ b/storage.py	(date 1747975099773)
+@@ -0,0 +1,50 @@
++import telebot
++from config import TG_API_KEY
++from log_funcs import logger
++from storage.db import init_db
++import time
++from storage.db import engine, init_db
++from sqlalchemy import inspect
++from telebot import types
++import logging
++from urllib.parse import urlparse
++
++logger = logging.getLogger(__name__)
++
++
++def check_tables():
++    init_db()
++    inspector = inspect(engine)
++    print("Таблицы в БД:", inspector.get_table_names())
++
++check_tables()
++
++
++
++def main():
++    try:
++        # Инициализация БД (без пересоздания таблиц)
++        init_db()
++        check_tables()
++
++        bot = telebot.TeleBot(TG_API_KEY)
++
++        # Запуск бота
++
++        logger.info("Бот запущен")
++        bot.infinity_polling(long_polling_timeout=10)
++
++    except Exception as e:
++        logger.error(f"Ошибка в main: {e}")
++        raise
++
++
++if __name__ == "__main__":
++    main()
++    try:
++        # Удерживаем выполнение, чтобы бот работал
++        while True:
++            time.sleep(0.5)
++    except KeyboardInterrupt:
++        print("Бот остановлен.")
++

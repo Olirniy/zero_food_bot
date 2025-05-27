@@ -1,0 +1,79 @@
+Index: config.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import json\r\nimport os\r\nfrom dotenv import load_dotenv\r\n\r\nload_dotenv()  # Загружаем переменные из .env\r\n\r\n# Основной токен (обязательный)\r\nTG_API_KEY = os.getenv(\"ZERO_FOOD_BOT_API_KEY\")\r\n\r\nif not TG_API_KEY:\r\n    raise ValueError(\"Токен бота не найден! Добавьте ZERO_FOOD_BOT_API_KEY в .env файл\")\r\n\r\n\r\n\r\ndef load_config():\r\n    #Загружаем конфиг из файла\r\n    with open(\"config.json\", \"r\", encoding=\"utf-8\") as config_file:\r\n        config = json.load(config_file)\r\n    load_dotenv(\".env\")\r\n    config[\"tg_api_key\"] = os.getenv(\"ZERO_FOOD_BOT_API_KEY\")\r\n    config[\"debug_tg_api_key\"] = os.getenv(\"ZERO_FOOD_BOT_API_KEY_DEBUG\")\r\n    return config\r\n\r\nconfig = load_config()\r\nTG_API_KEY = config[\"tg_api_key\"]\r\nADMINS = config[\"admins\"]\r\nLOGS_DIRECTORY = config[\"logs_directory\"]\r\ndebug_mode = config[\"debug_mode\"]\r\nif debug_mode==1:\r\n    TG_API_KEY = config[\"debug_tg_api_key\"]\r\n    LOGS_DIRECTORY = config[\"logs_directory_deb\"]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/config.py b/config.py
+--- a/config.py	(revision ca6429713871e16df24dba073fec84ee60c9dc10)
++++ b/config.py	(date 1747983353492)
+@@ -12,20 +12,61 @@
+ 
+ 
+ 
++
+ def load_config():
+-    #Загружаем конфиг из файла
++    # Загружаем конфиг из файла
+     with open("config.json", "r", encoding="utf-8") as config_file:
+         config = json.load(config_file)
++
+     load_dotenv(".env")
++
++    # Настройки Telegram
+     config["tg_api_key"] = os.getenv("ZERO_FOOD_BOT_API_KEY")
+-    config["debug_tg_api_key"] = os.getenv("ZERO_FOOD_BOT_API_KEY_DEBUG")
++    config["debug_tg_api_key"] = os.getenv("ZERO_FOOD_BOT_API_KEY_DEBUG", "")
++
++    # Настройки БД
++    config["SQL_DATA"] = {
++        "db_path": config["db_path"],
++        "tables": config["tables"]
++    }
+     return config
+ 
++
+ config = load_config()
+ TG_API_KEY = config["tg_api_key"]
+ ADMINS = config["admins"]
+ LOGS_DIRECTORY = config["logs_directory"]
++SQL_DATA = config["SQL_DATA"]
+ debug_mode = config["debug_mode"]
+-if debug_mode==1:
+-    TG_API_KEY = config["debug_tg_api_key"]
+-    LOGS_DIRECTORY = config["logs_directory_deb"]
+\ No newline at end of file
++
++if debug_mode == 1:
++    TG_API_KEY = config["debug_tg_api_key"] or TG_API_KEY
++    LOGS_DIRECTORY = config["logs_directory_deb"]
++
++
++
++
++
++
++
++# import json
++# import os
++# from dotenv import load_dotenv
++#
++# def load_config():
++#     #Загружаем конфиг из файла
++#     with open("config.json", "r", encoding="utf-8") as config_file:
++#         config = json.load(config_file)
++#     load_dotenv(".env")
++#     config["tg_api_key"] = os.getenv("ZERO_FOOD_BOT_API_KEY")
++#     config["debug_tg_api_key"] = os.getenv("ZERO_FOOD_BOT_API_KEY_DEBUG")
++#     return config
++#
++# config = load_config()
++# TG_API_KEY = config["tg_api_key"]
++# ADMINS = config["admins"]
++# LOGS_DIRECTORY = config["logs_directory"]
++# debug_mode = config["debug_mode"]
++# if debug_mode==1:
++#     TG_API_KEY = config["debug_tg_api_key"]
++#     LOGS_DIRECTORY = config["logs_directory_deb"]
+\ No newline at end of file
