@@ -1,3 +1,10 @@
+# Giga IDE files
+/.idea/
+/gigaide/
+*.properties
+*.xml
+
+
 # IDE-специфичные файлы
 .idea/          # PyCharm/GigaIDE (частично совместимы, но лучше исключить)
 *.iml
