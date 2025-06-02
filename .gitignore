@@ -1,7 +1,25 @@
-# Byte-compiled / optimized / DLL files
+# IDE-специфичные файлы
+.idea/          # PyCharm/GigaIDE (частично совместимы, но лучше исключить)
+*.iml
+*.ipr
+*.iws
+
+# Временные файлы и кэши
 __pycache__/
 *.py[cod]
 *$py.class
+
+
+
+# Файлы настроек GigaIDE (если появятся)
+.giga/
+.giga_settings/
+
+# Системные/скрытые файлы
+.DS_Store       # macOS
+Thumbs.db       # Windows
+
+
 
 # C extensions
 *.so
