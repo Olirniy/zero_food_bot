@@ -38,12 +38,28 @@ def register_cart_handlers(bot: TeleBot, db, sql_data: dict):
     def get_current_cart_state(chat_id, message_id):
         """Возвращает текущий текст и разметку сообщения с корзиной"""
         try:
-            # Получаем текущее сообщение
-            msg = bot.get_message(chat_id, message_id)
-            return (msg.text, str(msg.reply_markup))
+            # В pyTelegramBotAPI нет метода get_message, используем кэширование
+            # Вместо этого будем хранить последнее состояние в памяти
+            if not hasattr(bot, '_last_cart_state'):
+                bot._last_cart_state = {}
+
+            key = f"{chat_id}_{message_id}"
+            return bot._last_cart_state.get(key, (None, None))
         except Exception as e:
             logger.error(f"Ошибка получения состояния корзины: {e}")
             return (None, None)
+
+
+    def update_cart_state(chat_id, message_id, text, markup):
+        """Обновляет сохраненное состояние корзины"""
+        try:
+            if not hasattr(bot, '_last_cart_state'):
+                bot._last_cart_state = {}
+
+            key = f"{chat_id}_{message_id}"
+            bot._last_cart_state[key] = (text, str(markup))
+        except Exception as e:
+            logger.error(f"Ошибка обновления состояния корзины: {e}")
 
 
     def get_in_cart(self, user_id: int) -> Optional['Order']:
@@ -183,63 +199,40 @@ def register_cart_handlers(bot: TeleBot, db, sql_data: dict):
 
 
             # Обработка отправки/обновления сообщения
-            try:
-                if edit_message_id:
-                    # ... [код обновления сообщения] ...
-                    # Изменяем только если есть изменения
-                    if edit_message_id:
-                        # Всегда пытаемся обновить сообщение
-                        bot.edit_message_text(
-                            chat_id=chat_id,
-                            message_id=edit_message_id,
-                            text=response,
-                            parse_mode="Markdown",
-                            reply_markup=markup
-                        )
-                        logger.debug("Корзина обновлена")
-                    else:
-                        logger.debug("Корзина не изменилась")
-                else:
-                    bot.send_message(
-                        chat_id,
-                        response,
+            if edit_message_id:
+                try:
+                    bot.edit_message_text(
+                        chat_id=chat_id,
+                        message_id=edit_message_id,
+                        text=response,
                         parse_mode="Markdown",
                         reply_markup=markup
                     )
-                    logger.debug("Новая корзина отправлена")
-                # После bot.edit_message_text
-                if isinstance(message, CallbackQuery):
-                    try:
-                        bot.answer_callback_query(
-                            message.id,
-                            f"Количество изменено: {dish_name} - {new_quantity}",
-                            show_alert=False
-                        )
-                    except Exception:
-                        logger.debug("Callback уже обработан")
-            except Exception as e:
-                if "message is not modified" in str(e):
-                    logger.debug("Корзина уже актуальна")
-                    # Можно добавить легкое уведомление
-                    if isinstance(message, CallbackQuery):
-                        bot.answer_callback_query(
-                            message.id,
-                            "🔄 Корзина не изменилась",
-                            show_alert=False
-                        )
-                else:
-                    logger.error(f"Ошибка Telegram API: {e}")
-                    raise
-
-
-        # ... [существующий код] ...
-        except Exception as e:
-            if "message is not modified" in str(e):
-                logger.debug("Корзина уже актуальна")
-                # Удаляем эту часть, чтобы избежать двойного ответа
+                    # Обновляем состояние после успешного редактирования
+                    update_cart_state(chat_id, edit_message_id, response, markup)
+                    logger.debug("Корзина обновлена")
+                except Exception as e:
+                    if "message is not modified" in str(e):
+                        logger.debug("Корзина уже актуальна")
+                        if isinstance(message, CallbackQuery) and message.data != "refresh_cart":
+                            bot.answer_callback_query(
+                                message.id,
+                                "🔄 Корзина не изменилась",
+                                show_alert=False
+                            )
+                    else:
+                        logger.error(f"Ошибка Telegram API: {e}")
+                        raise
             else:
-                logger.error(f"Ошибка Telegram API: {e}")
-                raise
+                sent_msg = bot.send_message(
+                    chat_id,
+                    response,
+                    parse_mode="Markdown",
+                    reply_markup=markup
+                )
+                # Сохраняем состояние для нового сообщения
+                update_cart_state(chat_id, sent_msg.message_id, response, markup)
+                logger.debug("Новая корзина отправлена")
 
         except Exception as e:
             logger.error(f"Критическая ошибка в корзине: {e}", exc_info=True)
@@ -308,21 +301,20 @@ def register_cart_handlers(bot: TeleBot, db, sql_data: dict):
             )
 
 
+
     @bot.callback_query_handler(func=lambda call: call.data == "refresh_cart")
     def refresh_cart(call: CallbackQuery):
         try:
-            # Проверяем, изменилась ли корзина
-            cart_changed = show_cart(call, edit_message_id=call.message.message_id, check_only=True)
+            # Всегда обновляем сообщение, чтобы получить актуальное состояние
+            show_cart(call, edit_message_id=call.message.message_id)
 
-            if not cart_changed:
-                # Отправляем уведомление, что корзина актуальна
-                bot.answer_callback_query(
-                    call.id,
-                    "🔄 Корзина уже актуальна!",
-                    show_alert=False
-                )
-            else:
-                bot.answer_callback_query(call.id)
+            # Всегда показываем уведомление
+            bot.answer_callback_query(
+                call.id,
+                "🔄 Корзина проверена и актуальна",
+                show_alert=False
+            )
+
         except Exception as e:
             logger.error(f"Ошибка обновления корзины: {e}")
             bot.answer_callback_query(
