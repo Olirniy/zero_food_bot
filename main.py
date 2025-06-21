@@ -1,82 +1,52 @@
-import os
-import logging
-import telebot
+from telebot import TeleBot
 from storage.db_session import DBSession
-from storage.user_storage import UserStorage
-from models.user import User
+from core.handlers.base import register_base_handlers
+from core.handlers.menu import register_menu_handlers
+from core.handlers.cart import register_cart_handlers
 from config import TG_API_KEY, SQL_DATA
-import sqlite3
+from utils.init_data import init_sample_data
+import os  # Добавлено
+from utils.dependencies import log_dependencies
+log_dependencies()
+from utils.logger import setup_logger  # Добавить в импорты
 
+logger = setup_logger(__name__)  # После всех импортов
 
-
-# Настройка логирования
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 
 def main():
+    logger.info("Запуск бота")
     try:
-        # Удаляем старые файлы БД
-        if os.path.exists(SQL_DATA["db_path"]):
-            try:
-                os.remove(SQL_DATA["db_path"])
-                print("Удалена старая БД")
-            except Exception as e:
-                print(f"Не удалось удалить БД: {e}")
+        # Создаем папку data если её нет
+        os.makedirs('data', exist_ok=True)
 
-        # Инициализация БД (создаст таблицы при первом вызове)
+        # Инициализация БД
         db = DBSession()
+        print(f"🛢 Используется БД: {SQL_DATA['db_path']}")
+        print("Существует ли файл БД:", os.path.exists(SQL_DATA['db_path']))
 
-        # Явная проверка таблиц
+
+
+
+        # Запись всех таблиц БД
         with db.get_session() as conn:
             tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
-            print(f"Таблицы в БД: {[t[0] for t in tables]}")
+            logger.info(f"Таблицы БД: {tables}")
 
-            # Если нет таблиц - создаем заново
-            if not tables:
-                db._init_tables()
-                print("Таблицы созданы принудительно")
 
-        # Остальной код бота...
-        user_storage = UserStorage(db, SQL_DATA)
-        bot = telebot.TeleBot(TG_API_KEY)
+        # Создаем бота
+        bot = TeleBot(TG_API_KEY)
+        print("Проверка токена:", bool(TG_API_KEY))
 
-        @bot.message_handler(commands=['start'])
-        def handle_start(message):
-            try:
-                # Проверка таблицы users
-                with db.get_session() as conn:
-                    conn.execute("SELECT 1 FROM users LIMIT 1")
+        # Регистрация обработчиков
+        register_base_handlers(bot, db, SQL_DATA)
+        register_menu_handlers(bot, db, SQL_DATA)
+        register_cart_handlers(bot, db, SQL_DATA)
 
-                user = user_storage.load_by_telegram_id(message.from_user.id)
-                if not user:
-                    new_user = User(
-                        id=0,
-                        telegram_id=message.from_user.id,
-                        username=message.from_user.username or f"user_{message.from_user.id}"
-                    )
-                    user_storage.save(new_user)
-                    user = user_storage.load_by_telegram_id(message.from_user.id)
-                    bot.reply_to(message, f"✅ Регистрация успешна! ID: {user.id}")
-                else:
-                    bot.reply_to(message, f"👋 С возвращением! ID: {user.id}")
-            except sqlite3.OperationalError as e:
-                print(f"Ошибка таблицы users: {e}")
-                bot.reply_to(message, "❌ Ошибка БД. Перезапустите бота.")
-
-        logger.info("Starting bot...")
+        print("🍜 Бот запущен и ожидает сообщений...")
         bot.infinity_polling()
-
-
-
     except Exception as e:
-        print(f"Fatal error: {e}")
-    finally:
-        db.close()
-
+        logger.critical(f"Критическая ошибка: {e}", exc_info=True)
 
 if __name__ == "__main__":
     main()

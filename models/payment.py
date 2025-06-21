@@ -21,6 +21,9 @@ class Payment:
         self._transaction_id = transaction_id
         self._created_at = created_at or datetime.now()
 
+    def __repr__(self) -> str:
+        return f"Payment(id={self.id}, order_id={self.order_id}, amount={self.amount}, status={self.status.value})"
+
 
 
     @property

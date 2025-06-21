@@ -1,5 +1,3 @@
-from datetime import datetime
-from typing import Optional
 
 from datetime import datetime
 from typing import Optional
@@ -11,6 +9,9 @@ class Feedback:
         self._order_id = order_id
         self._text = text
         self._created_at = created_at or datetime.now()  # Устанавливаем текущее время если None
+
+    def __repr__(self) -> str:
+        return f"Feedback(id={self.id}, user_id={self.user_id}, text='{self.text[:20]}...')"
 
     @property
     def id(self) -> int:

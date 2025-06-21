@@ -28,6 +28,7 @@ def load_config():
             "feedback": "feedback"  # Добавьте эту строку
         }
     }
+    config['SQL_DATA']['db_path'] = os.path.join('data', 'bot.db') if os.getenv('TEST_MODE') != '1' else os.path.join('data', 'test.db')
     return config
 
 

@@ -3,6 +3,14 @@ from typing import List, Optional
 from models.feedback import Feedback
 import sqlite3
 from datetime import datetime
+from typing import TYPE_CHECKING
+from utils.logger import setup_logger  # Добавить в импорты
+logger = setup_logger(__name__)  # После всех импортов
+logger.debug(f"Импортирован {__name__}")
+
+if TYPE_CHECKING:
+    from storage.db_session import DBSession
+
 
 
 def adapt_datetime(dt):

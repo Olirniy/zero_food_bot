@@ -1,6 +1,6 @@
 from typing import Optional, List, TYPE_CHECKING
 from models.enums import OrderStatus
-
+from datetime import datetime
 if TYPE_CHECKING:
     from storage.order_storage import OrderStorage
     from models.order import Order
@@ -8,7 +8,15 @@ if TYPE_CHECKING:
 
 
 
+from utils.logger import setup_logger
+logger = setup_logger(__name__)
 
+try:
+    from models.order import Order
+    logger.debug(f"Order class: {Order}")
+except ImportError as e:
+    logger.critical(f"Ошибка импорта Order: {e}", exc_info=True)
+    raise
 
 
 class OrderRepository:
@@ -16,18 +24,30 @@ class OrderRepository:
         self._storage = storage
         self._order_item_repo = order_item_repo
 
-    def get_in_cart(self, user_id: int) -> Optional['Order']:
+    def get_in_cart(self, user_id: int) -> 'Order':
+        """Всегда возвращает корзину, создает новую если не существует"""
         orders = self._storage.load_by_user(user_id)
         for order in orders:
             if order.status == OrderStatus.IN_CART:
                 return order
-        return None
 
-    def create(self, user_id: int) -> 'Order':
-        order = Order(
+        # Если корзина не найдена - создаем и возвращаем новую
+        new_order = Order(
             id=0,
             user_id=user_id,
             status=OrderStatus.IN_CART,
+            payment_method=None,
+            created_at=datetime.now()
+        )
+        return self._storage.save(new_order)
+
+
+    # В order_repo.py изменим метод create:
+    def create(self, user_id: int, status: OrderStatus = OrderStatus.IN_CART) -> 'Order':
+        order = Order(
+            id=0,
+            user_id=user_id,
+            status=status,
             payment_method=None,
             created_at=None
         )

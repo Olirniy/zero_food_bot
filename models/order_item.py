@@ -8,6 +8,9 @@ class OrderItem:
         self._dish = dish
         self._quantity = quantity
 
+    def __repr__(self) -> str:
+        return f"OrderItem(id={self.id}, order_id={self.order_id}, dish_id={self.dish.id}, qty={self.quantity})"
+
     @property
     def id(self) -> int:
         return self._id

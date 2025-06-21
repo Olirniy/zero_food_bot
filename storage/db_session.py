@@ -4,6 +4,10 @@ import threading
 from datetime import datetime
 from config import SQL_DATA
 
+
+
+
+
 # Добавьте эти функции адаптации даты перед классом
 def adapt_datetime(dt):
     return dt.isoformat()
@@ -29,6 +33,13 @@ class DBSession:
         return cls._instance
 
     def get_session(self) -> sqlite3.Connection:
+        from utils.logger import setup_logger  # Ленивый импорт
+        logger = setup_logger(__name__)
+        logger.debug("Инициализация объекта класса")
+
+        if not hasattr(self.local, 'conn'):
+            logger.debug("Создание нового соединения с БД")
+        """Возвращает подключение к базе данных"""
         if not hasattr(self.local, 'conn') or self.local.conn is None:
             self.local.conn = sqlite3.connect(
                 self.db_path,
@@ -48,10 +59,10 @@ class DBSession:
         """Создает все таблицы при первом подключении"""
         tables_sql = [
             """CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                telegram_id INTEGER UNIQUE NOT NULL,
-                username TEXT
-            )""",
+               id INTEGER PRIMARY KEY AUTOINCREMENT,
+               telegram_id INTEGER UNIQUE NOT NULL,
+               username TEXT
+           )""",
             """CREATE TABLE IF NOT EXISTS categories (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL UNIQUE
@@ -84,15 +95,47 @@ class DBSession:
                 transaction_id TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (order_id) REFERENCES orders(id)
-            )"""
+            )""",
+            """CREATE TABLE IF NOT EXISTS orders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                status TEXT NOT NULL,
+                payment_method TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )""",
+            """CREATE TABLE IF NOT EXISTS order_items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_id INTEGER NOT NULL,
+                dish_id INTEGER NOT NULL,
+                quantity INTEGER NOT NULL,
+                FOREIGN KEY (order_id) REFERENCES orders(id),
+                FOREIGN KEY (dish_id) REFERENCES dishes(id)
+            )""",
+        ]
+
+        indexes_sql = [
+            """CREATE INDEX IF NOT EXISTS idx_dishes_category ON dishes(category_id)""",
+            """CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id)""",
+            """CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id)""",
+            """CREATE INDEX IF NOT EXISTS idx_order_items_dish ON order_items(dish_id)"""
         ]
 
         conn = self.local.conn
+        # Создаем таблицы
         for table_sql in tables_sql:
             try:
                 conn.execute(table_sql)
             except sqlite3.Error as e:
                 print(f"Error creating table: {e}")
+
+        # Создаем индексы
+        for index_sql in indexes_sql:
+            try:
+                conn.execute(index_sql)
+            except sqlite3.Error as e:
+                print(f"Error creating index: {e}")
+
         conn.commit()
 
     def close(self):

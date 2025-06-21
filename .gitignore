@@ -182,4 +182,37 @@ cython_debug/
 *.pyo
 *.pyd
 
+# Временные файлы редактора/IDE
+*.tmp
+*.swp
+*~
+.~lock.*
+
+# Автогенерируемые файлы GigaIDE (если есть)
+.giga/
+.ide/
+.metadata/
+.gigaide/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Логи и дампы
+
+*.dump
+
+# Конфиги с чувствительными данными
+
+.env.local
+*.secret
+config.json
+
+# Артефакты сборки (если проект компилируемый)
+/dist/
+/build/
+/out/
+/bin/service.py
+bin/service.py
+
 zero_food_bot.egg-info

@@ -2,7 +2,6 @@ import sys
 from pathlib import Path
 import pytest
 import os
-import sqlite3
 from datetime import datetime
 from storage.db_session import DBSession
 from models.user import User

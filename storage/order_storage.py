@@ -5,6 +5,9 @@ from models.enums import OrderStatus, PaymentMethod
 from repository.payment_repo import PaymentRepository
 from storage.payment_storage import PaymentStorage
 from config import SQL_DATA  # Если SQL_DATA используется напрямую
+from utils.logger import setup_logger  # Добавить в импорты
+logger = setup_logger(__name__)  # После всех импортов
+logger.debug(f"Импортирован {__name__}")
 
 if TYPE_CHECKING:
     from models.order import Order
@@ -13,13 +16,6 @@ if TYPE_CHECKING:
 
 
 
-
-
-
-
-
-if TYPE_CHECKING:
-    from storage.db_session import DBSession
 
 
 class OrderStorage:
@@ -108,9 +104,13 @@ class OrderStorage:
             orders = []
             for row in rows:
                 try:
+                    if isinstance(row[4], str):
+                        created_at = datetime.fromisoformat(row[4])
+                    else:
+                        created_at = row[4]
                     status = OrderStatus(row[2])
                     payment_method = PaymentMethod(row[3]) if row[3] else None
-                    created_at = datetime.fromisoformat(row[4])
+                    created_at = row[4]
                     orders.append(Order(
                         id=row[0],
                         user_id=row[1],
@@ -149,3 +149,73 @@ class OrderStorage:
         order.status = OrderStatus.CONFIRMED
         order.payment_method = payment_method
         return self.save(order)
+
+
+    def get_in_cart(self, user_id: int) -> Optional['Order']:
+        """
+        Возвращает неоформленный заказ (со статусом IN_CART)
+        или None, если такого нет
+        """
+        with self._db_session.get_session() as conn:
+            row = conn.execute(
+                f'''
+                SELECT id, user_id, status, payment_method, created_at
+                FROM {self._sql_data["tables"]["orders"]}
+                WHERE user_id = ? AND status = ?
+                LIMIT 1
+                ''',
+                (user_id, OrderStatus.IN_CART.value)
+            ).fetchone()
+
+            if not row:
+                return None
+
+            return Order(
+                id=row[0],
+                user_id=row[1],
+                status=OrderStatus(row[2]),
+                payment_method=PaymentMethod(row[3]) if row[3] else None,
+                created_at=row[4]
+            )
+
+
+    # Улучшенная версия с обработкой items
+    # Если нужно сразу загружать позиции заказа:
+
+    # def get_in_cart(self, user_id: int) -> Optional['Order']:
+    #     """
+    #     Возвращает неоформленный заказ с товарами
+    #     или None, если такого нет
+    #     """
+    # from storage.order_items_storage import OrderItemStorage  # Локальный импорт
+    #
+    # with self._db_session.get_session() as conn:
+    #     # Получаем заказ
+    #     order_row = conn.execute(
+    #         f'''
+    #         SELECT id, user_id, status, payment_method, created_at
+    #         FROM {self._sql_data["tables"]["orders"]}
+    #         WHERE user_id = ? AND status = ?
+    #         LIMIT 1
+    #         ''',
+    #         (user_id, OrderStatus.IN_CART.value)
+    #     ).fetchone()
+    #
+    #     if not order_row:
+    #         return None
+    #
+    #     order = Order(
+    #         id=order_row[0],
+    #         user_id=order_row[1],
+    #         status=OrderStatus(order_row[2]),
+    #         payment_method=PaymentMethod(order_row[3]) if order_row[3] else None,
+    #         created_at=order_row[4]
+    #     )
+    #
+    #     # Получаем позиции заказа
+    #     items_storage = OrderItemStorage(self._db_session, self._sql_data)
+    #     items = items_storage.get_by_order(order.id)
+    #     for item in items:
+    #         order.add_item(item)
+    #
+    #     return order

@@ -1,8 +1,16 @@
 from typing import List, Optional, TYPE_CHECKING
 from models.dish import Dish
+from utils.logger import setup_logger  # Добавить в импорты
+logger = setup_logger(__name__)  # После всех импортов
+logger.debug(f"Импортирован {__name__}")
+
 
 if TYPE_CHECKING:
     from storage.db_session import DBSession
+
+
+
+
 
 class DishStorage:
     def __init__(self, db_session: 'DBSession', sql_data: dict[str, str]) -> None:
@@ -11,7 +19,7 @@ class DishStorage:
         self._init_table()
 
     def _init_table(self) -> None:
-        print("Создаётся таблица:", self._sql_data["tables"]["dishes"])
+        logger.info(f"Создаётся таблица: {self._sql_data['tables']['dishes']}")
         with self._db_session.get_session() as conn:
             conn.execute(f'''
                 CREATE TABLE IF NOT EXISTS {self._sql_data["tables"]["dishes"]} (

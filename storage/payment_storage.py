@@ -1,7 +1,14 @@
-from typing import List, Optional
+from typing import List
 from models.payment import Payment, PaymentStatus
 from storage.db_session import DBSession
+from typing import TYPE_CHECKING
+from utils.logger import setup_logger  # Добавить в импорты
+logger = setup_logger(__name__)  # После всех импортов
+logger.debug(f"Импортирован {__name__}")
 
+
+if TYPE_CHECKING:
+    from storage.db_session import DBSession
 
 class PaymentStorage:
     def __init__(self, db_session: DBSession, sql_data: dict):

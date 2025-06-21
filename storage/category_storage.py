@@ -1,6 +1,9 @@
 # storage/category_storage.py
 from typing import Optional, List, TYPE_CHECKING
 from models.category import Category
+from utils.logger import setup_logger  # Добавить в импорты
+logger = setup_logger(__name__)  # После всех импортов
+logger.debug(f"Импортирован {__name__}")
 
 if TYPE_CHECKING:
     from storage.db_session import DBSession
@@ -21,12 +24,22 @@ class CategoryStorage:
             ''')
             conn.commit()
 
+
     def save(self, category: 'Category') -> None:
         with self._db_session.get_session() as conn:
-            conn.execute(
-                f"INSERT OR REPLACE INTO {self._sql_data['tables']['categories']} (id, name) VALUES (?, ?)",
-                (category.id, category.name)
-            )
+            if category.id == 0:  # Новая категория
+                cursor = conn.execute(
+                    f"INSERT INTO {self._sql_data['tables']['categories']} (name) VALUES (?)",
+                    (category.name,)
+                )
+                category._id = cursor.lastrowid
+                logger.info(f"Создана категория: {category.name} (ID: {category.id})")
+            else:  # Обновление существующей
+                conn.execute(
+                    f"UPDATE {self._sql_data['tables']['categories']} SET name=? WHERE id=?",
+                    (category.name, category.id)
+                )
+                logger.info(f"Обновлена категория: {category.name} (ID: {category.id})")
             conn.commit()
 
     def load_by_id(self, id: int) -> Optional['Category']:

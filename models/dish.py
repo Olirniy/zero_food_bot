@@ -11,6 +11,9 @@ class Dish:
         self._price = price
         self._photo_url = photo_url
 
+    def __repr__(self) -> str:
+        return f"Dish(id={self.id}, name='{self.name}', price={self.price}, category_id={self.category_id})"
+
     @property
     def id(self) -> int:
         return self._id
